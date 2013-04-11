@@ -4,7 +4,3 @@
 
 
 `$ node server.js`
-
-
-
-`$ open index.html`

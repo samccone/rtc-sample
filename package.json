@@ -4,7 +4,10 @@
   "description": "ERROR: No README.md file found!",
   "main": "server.js",
   "dependencies": {
-    "webrtc.io": "~0.0.4"
+    "webrtc.io": "~0.0.4",
+    "express": "~3.1.1",
+    "colors": "~0.6.0-1",
+    "jade": "~0.28.2"
   },
   "devDependencies": {},
   "scripts": {
