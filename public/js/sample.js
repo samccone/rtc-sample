@@ -3,6 +3,10 @@ var ctx = new webkitAudioContext()
   , buffers = []
   , src
 
+console.log = function(message) {
+  document.getElementById('console').innerHTML += message + "\n";
+}
+
 var dataChannelChat = {
   send: function(message) {
     for(var connection in rtc.dataChannels) {
@@ -29,7 +33,9 @@ rtc.on('add remote stream', function(stream, socketId) {
   rtc.attachStream(stream, socketId);
 });
 
-rtc.connect('ws://localhost:8001', '');
+rtc.on('connect', function() {
+  console.log("** RTC connected");
+})
 
 navigator.webkitGetUserMedia({audio: true}, connect, streamErr);
 
@@ -55,4 +61,9 @@ function processor(evt){
     output.set(buffers.shift());
   else
     output.set(new Float32Array(512))
+}
+
+
+window.onload = function() {
+  rtc.connect('ws://localhost:8001', '');
 }
