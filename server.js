@@ -16,7 +16,7 @@ server.configure(function() {
 });
 
 webRTC.on('connection', function() {
-  console.log("new RTC connection".green);
+  console.log("new RTC connection".green + " " + new Date);
 });
 
 server.get("/", function(req, res) {
