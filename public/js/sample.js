@@ -82,7 +82,9 @@ function evtHandler( data ){
           data: description,
           id: _id
         }));
-      }, null, constraints);
+      }, function(){
+        console.log(arguments);
+      }, constraints);
       break;
     case 'received_answer':
       if ( connected ) return;
