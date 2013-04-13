@@ -1,31 +1,26 @@
-var ctx = new webkitAudioContext()
-  , src
-
 console.log = function(message) {
   document.getElementById('console').innerHTML += message + "\n";
 }
 
-rtc.on('add remote stream', function(stream, socketId) {
-  console.log("ADDING REMOTE STREAM...");
-  connect(stream);
-});
+var ws = new WebSocket("ws:"+window.location.href.split(":")[1]+":8000");
 
-rtc.on('connect', function() {
-  console.log("** RTC connected");
-});
+ws.onmessage = function(d) {
+  d = JSON.parse(d.data);
+  if (d.type === "assigned_id") {
+    this._id = d.id;
+    console.log("id received");
+  } else {
+    console.log(d);
+  }
+};
 
-rtc.createStream({audio: true}, function(){}, streamErr);
-
-function connect( stream ){
-  var audio = new Audio();
-  audio.src = webkitURL.createObjectURL(stream);
-  audio.play();
+function closeSocket() {
+  ws.send(JSON.stringify({
+    type: "close",
+    data: {
+      id: ws._id
+    }
+  }));
 }
 
-function streamErr(){
-  alert('O noes! couldn\'t get ur inputz');
-}
-
-window.onload = function() {
-  rtc.connect('ws://24.­250.­22.­134:­80001', '');
-}
+window.onbeforeunload = closeSocket;
