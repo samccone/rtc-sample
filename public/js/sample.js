@@ -73,7 +73,7 @@ function evtHandler( data ){
     case 'assigned_id':
       _id = data.id;
       break;
-    case 'receiver_offer':
+    case 'received_offer':
       pc.setRemoteDescription(new RTCSessionDescription(data.data), function(){
         console.log("hre");
         pc.createAnswer(function( description ){
