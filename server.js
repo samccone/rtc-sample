@@ -20,7 +20,7 @@ server.get("/", function(req, res) {
   res.render("index");
 });
 
-server.listen(8888);
+server.listen(8001);
 console.log("HTTP Started".yellow);
 
 var io            = ws.listen(8000);

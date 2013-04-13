@@ -1,6 +1,6 @@
-console.log = function(message) {
-  document.getElementById('console').innerHTML += message + "\n";
-};
+// console.log = function(message) {
+//   document.getElementById('console').innerHTML += message + "\n";
+// };
 
 var ws = new WebSocket("ws:"+window.location.href.split(":")[1]+":8000")
   , config = {iceServers: [{url: 'stun:stun.l.google.com:19302'}]}
@@ -91,8 +91,8 @@ function evtHandler( data ){
       break;
     case 'received_candidate':
       candidate = new RTCIceCandidate({
-        sdpMLineIndex: data.label,
-        candidate: data.candidate
+        sdpMLineIndex: data.data.label,
+        candidate: data.data.candidate
       });
       pc.addIceCandidate(candidate);
       break;
