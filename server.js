@@ -20,7 +20,7 @@ server.get("/", function(req, res) {
   res.render("index");
 });
 
-server.listen(3000);
+server.listen(8888);
 console.log("HTTP Started".yellow);
 
 var io            = ws.listen(8000);
@@ -37,10 +37,10 @@ io.on('connection', function(socket) {
     id: socket.id
   }));
 
-  socket.on('message', switchBox);
+  socket.on('message', function(d){switchBox(d, socket)});
 });
 
-function switchBox(d) {
+function switchBox(d, socket) {
   d = JSON.parse(d);
   switch(d.type){
     case "received_offer":
@@ -48,13 +48,16 @@ function switchBox(d) {
     case "received_answer":
       var _keys = Object.keys(io.s_clients);
       for(var i = 0; i < _keys.length; ++i) {
-        io.s_clients[_keys[i]].send(JSON.stringify(d));
+        if (_keys[i] != d.id) {
+          io.s_clients[_keys[i]].send(JSON.stringify(d));
+        }
       }
       console.log(d.type+"".yellow);
     break;
     case "close":
       console.log("socket closing".yellow);
       socket.close();
+      delete io.s_clients[d.data.id]
     break;
     default:
       console.log("unknown type ".red + " " + d.type);
