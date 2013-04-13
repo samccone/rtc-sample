@@ -30,7 +30,7 @@ pc.onicecandidate = function( e ){
 pc.onaddstream = function( e ){
   var vid = document.createElement('video');
   vid.src = URL.createObjectURL(e.stream);
-  document.body.appendCHild(vid);
+  document.body.appendChild(vid);
   vid.play();
   console.log('start remote video stream');
 };
@@ -44,7 +44,7 @@ function broadcast() {
     vid.play();
     vid.volume = 0;
     pc.addStream(s);
-    connect();
+    //connect();
   });
 };
 
@@ -79,7 +79,7 @@ function evtHandler( data ){
         pc.createAnswer(function( description ){
           console.log('sending answer');
           pc.setLocalDescription(description);
-          socket.send(JSON.stringify({
+          ws.send(JSON.stringify({
             type: 'received_answer',
             data: description,
             id: _id
