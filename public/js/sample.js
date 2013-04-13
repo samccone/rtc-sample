@@ -22,7 +22,8 @@ pc.onicecandidate = function( e ){
     data: {
       label: e.candidate.sdpMLineIndex,
       id: e.candidate.sdpMid,
-      candidate: e.candidate.candidate
+      candidate: e.candidate.candidate,
+      _id: _id
     }
   }));
 };
@@ -44,7 +45,12 @@ function broadcast() {
     vid.play();
     vid.volume = 0;
     pc.addStream(s);
-    //connect();
+    ws.send(JSON.stringify({
+      type: "stream_aval",
+      data: {
+        _id: _id
+      }
+    }));
   });
 };
 
@@ -71,18 +77,17 @@ function evtHandler( data ){
   console.log(data.type);
   switch( data.type ){
     case 'assigned_id':
-      _id = data.id;
+      _id = data._id;
       break;
     case 'received_offer':
       pc.setRemoteDescription(new RTCSessionDescription(data.data), function(){
-        console.log("hre");
         pc.createAnswer(function( description ){
           console.log('sending answer');
           pc.setLocalDescription(description);
+          description._id = _id;
           ws.send(JSON.stringify({
             type: 'received_answer',
-            data: description,
-            id: _id
+            data: description
           }));
         }, function(){
           console.log(arguments);
@@ -91,6 +96,9 @@ function evtHandler( data ){
         console.log(arguments);
       });
       break;
+    case 'stream_aval':
+      connect();
+    break;
     case 'received_answer':
       if ( connected ) return;
       pc.setRemoteDescription(new RTCSessionDescription(data.data));
@@ -112,6 +120,6 @@ function evtHandler( data ){
 window.onload = broadcast;
 
 window.onbeforeunload = function(){
-  ws.send(JSON.stringify({type: 'close', data: {id: _id} }));
+  ws.send(JSON.stringify({type: 'close', data: {_id: _id} }));
   pc = null;
 };

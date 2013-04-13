@@ -34,7 +34,7 @@ io.on('connection', function(socket) {
 
   socket.send(JSON.stringify({
     type: "assigned_id",
-    id: socket.id
+    _id: socket.id
   }));
 
   socket.on('message', function(d){switchBox(d, socket)});
@@ -43,12 +43,13 @@ io.on('connection', function(socket) {
 function switchBox(d, socket) {
   d = JSON.parse(d);
   switch(d.type){
+    case "stream_aval":
     case "received_offer":
     case "received_candidate":
     case "received_answer":
       var _keys = Object.keys(io.s_clients);
       for(var i = 0; i < _keys.length; ++i) {
-        if (_keys[i] != d.id) {
+        if (_keys[i] != d.data._id) {
           io.s_clients[_keys[i]].send(JSON.stringify(d));
         }
       }
@@ -57,8 +58,8 @@ function switchBox(d, socket) {
     case "close":
       console.log("socket closing".yellow);
       socket.close();
-      if (d.data && d.data.id) {
-        delete io.s_clients[d.data.id]
+      if (d.data && d.data._id) {
+        delete io.s_clients[d.data._id]
       } else {
         console.log("no id passed to close".red);
       }
