@@ -73,18 +73,19 @@ function evtHandler( data ){
       _id = data.id;
       break;
     case 'receiver_offer':
-      pc.setRemoteDescription(new RTCSessionDescription(data));
-      pc.createAnswer(function( description ){
-        console.log('sending answer');
-        pc.setLocalDescription(description);
-        socket.send(JSON.stringify({
-          type: 'received_answer',
-          data: description,
-          id: _id
-        }));
-      }, function(){
-        console.log(arguments);
-      }, constraints);
+      pc.setRemoteDescription(new RTCSessionDescription(data), function(){
+        pc.createAnswer(function( description ){
+          console.log('sending answer');
+          pc.setLocalDescription(description);
+          socket.send(JSON.stringify({
+            type: 'received_answer',
+            data: description,
+            id: _id
+          }));
+        }, function(){
+          console.log(arguments);
+        }, constraints);
+      });
       break;
     case 'received_answer':
       if ( connected ) return;
