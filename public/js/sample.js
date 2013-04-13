@@ -5,10 +5,12 @@
 var ws = new WebSocket("ws:"+window.location.href.split(":")[1]+":8000")
   , config = {iceServers: [{url: 'stun:stun.l.google.com:19302'}]}
   , pc = new webkitRTCPeerConnection(config)
-  , constraints = {mandatory: {
+  , constraints = {
+      mandatory: {
         OfferToReceiveAudio: true,
         OfferToReceiveVideo: true
-      }
+      },
+      optional: []
     }
   , connected = false
   , _id;
@@ -52,7 +54,6 @@ function connect(){
     ws.send(JSON.stringify({
       type: 'received_offer',
       data: description,
-      id: _id
     }));
   }, null, constraints);
 }
@@ -73,7 +74,8 @@ function evtHandler( data ){
       _id = data.id;
       break;
     case 'receiver_offer':
-      pc.setRemoteDescription(new RTCSessionDescription(data), function(){
+      pc.setRemoteDescription(new RTCSessionDescription(data.data), function(){
+        console.log("hre");
         pc.createAnswer(function( description ){
           console.log('sending answer');
           pc.setLocalDescription(description);
@@ -91,7 +93,7 @@ function evtHandler( data ){
       break;
     case 'received_answer':
       if ( connected ) return;
-      pc.setRemoteDescription(new RTCSessionDescription(data));
+      pc.setRemoteDescription(new RTCSessionDescription(data.data));
       connected = true;
       break;
     case 'received_candidate':
