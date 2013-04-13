@@ -2,11 +2,11 @@ console.log = function(message) {
   document.getElementById('console').innerHTML += message + "\n";
 };
 
-var ws = new WebSocket('ws://localhost:8000')
+var ws = new WebSocket("ws:"+window.location.href.split(":")[1]+":8000")
   , config = {iceServers: [{url: 'stun:stun.l.google.com:19302'}]}
   , pc = new webkitRTCPeerConnection(config)
   , constraints = {mandatory: {
-        OfferToReceiveAudio: true, 
+        OfferToReceiveAudio: true,
         OfferToReceiveVideo: true
       }
     }
@@ -75,9 +75,9 @@ function evtHandler( data ){
       pc.setRemoteDescription(new RTCSessionDescription(data));
       pc.createAnswer(function( description ){
         console.log('sending answer');
-        pc.setLocalDescription(description); 
+        pc.setLocalDescription(description);
         socket.send(JSON.stringify({
-          type: 'received_answer', 
+          type: 'received_answer',
           data: description,
           id: _id
         }));
