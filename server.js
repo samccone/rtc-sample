@@ -57,7 +57,11 @@ function switchBox(d, socket) {
     case "close":
       console.log("socket closing".yellow);
       socket.close();
-      delete io.s_clients[d.data.id]
+      if (d.data && d.data.id) {
+        delete io.s_clients[d.data.id]
+      } else {
+        console.log("no id passed to close".red);
+      }
     break;
     default:
       console.log("unknown type ".red + " " + d.type);
