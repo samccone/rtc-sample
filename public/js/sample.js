@@ -40,6 +40,7 @@ function broadcast() {
     vid.src = URL.createObjectURL(s);
     document.body.appendChild(vid);
     vid.play();
+    vid.volume = 0;
     pc.addStream(s);
     connect();
   });
