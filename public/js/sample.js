@@ -85,6 +85,8 @@ function evtHandler( data ){
         }, function(){
           console.log(arguments);
         }, constraints);
+      }, function(){
+        console.log(arguments);
       });
       break;
     case 'received_answer':
