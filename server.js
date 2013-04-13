@@ -34,7 +34,8 @@ io.on('connection', function(socket) {
 
   socket.send(JSON.stringify({
     type: "assigned_id",
-    _id: socket.id
+    _id: socket.id,
+    _connected_count: Object.keys(io.s_clients).length
   }));
 
   socket.on('message', function(d){switchBox(d, socket)});

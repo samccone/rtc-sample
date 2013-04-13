@@ -78,6 +78,9 @@ function evtHandler( data ){
   switch( data.type ){
     case 'assigned_id':
       _id = data._id;
+      if (data._connected_count > 1) {
+        connect();
+      }
       break;
     case 'received_offer':
       pc.setRemoteDescription(new RTCSessionDescription(data.data), function(){
@@ -97,7 +100,7 @@ function evtHandler( data ){
       });
       break;
     case 'stream_aval':
-      connect();
+      !connected && connect();
     break;
     case 'received_answer':
       if ( connected ) return;
