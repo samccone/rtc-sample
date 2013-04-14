@@ -13,3 +13,9 @@
       id: ws._id
     }
     }));
+
+
+The answer is here.... somewhere
+
+http://www.w3.org/TR/webrtc/#constraints
+
